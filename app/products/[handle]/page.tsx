@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: { handle: string
   const variant = product.variants.edges[0]?.node; // Simplify: use first variant for now
   
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto w-full px-4 md:px-8 py-8 md:py-12">
       <div className="border-b border-[#00ff41]/30 pb-2 flex justify-between items-end">
         <h1 className="text-2xl font-bold uppercase">
           {'>'} {product.title}<span className="animate-blink">_</span>

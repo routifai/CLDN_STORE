@@ -1,17 +1,20 @@
-import { Product } from '@/lib/types';
-import { headers } from 'next/headers';
+import { Product, GetProductByHandleData } from '@/lib/types';
 import AddToCart from '@/components/AddToCart';
 import Link from 'next/link';
 import TiltImage from '@/components/TiltImage';
+import { shopifyFetch } from '@/lib/shopify';
+import { GET_PRODUCT_BY_HANDLE } from '@/lib/queries';
 
 async function getProduct(handle: string): Promise<Product | null> {
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const host = headers().get('host') || 'localhost:3000';
-  const res = await fetch(`${protocol}://${host}/api/products/${handle}`, { cache: 'no-store' });
-  if (!res.ok) {
+  try {
+    const data = await shopifyFetch<GetProductByHandleData, { handle: string }>({
+      query: GET_PRODUCT_BY_HANDLE,
+      variables: { handle },
+    });
+    return data.productByHandle;
+  } catch {
     return null;
   }
-  return res.json();
 }
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {

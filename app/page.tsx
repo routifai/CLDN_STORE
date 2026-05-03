@@ -1,18 +1,18 @@
 import Image from 'next/image';
-import { Product } from '@/lib/types';
-import { headers } from 'next/headers';
+import { Product, GetProductsData } from '@/lib/types';
 import Link from 'next/link';
 import AddToCart from '@/components/AddToCart';
 import DropTeaser from '@/components/DropTeaser';
+import { shopifyFetch } from '@/lib/shopify';
+import { GET_PRODUCTS } from '@/lib/queries';
 
 async function getProducts(): Promise<Product[]> {
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const host = headers().get('host') || 'localhost:3000';
-  const res = await fetch(`${protocol}://${host}/api/products`, { cache: 'no-store' });
-  if (!res.ok) {
+  try {
+    const data = await shopifyFetch<GetProductsData>({ query: GET_PRODUCTS });
+    return data.products.edges.map((e) => e.node);
+  } catch {
     return [];
   }
-  return res.json();
 }
 
 export default async function Home() {

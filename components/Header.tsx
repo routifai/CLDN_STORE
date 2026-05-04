@@ -5,7 +5,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useEffect, useState } from "react";
 
 export default function Header() {
-  const { itemCount, checkoutUrl } = useCartStore();
+  const { itemCount } = useCartStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -54,15 +54,12 @@ export default function Header() {
           </Link>
         </nav>
         
-        {checkoutUrl && itemCount > 0 ? (
-          <a href={checkoutUrl} className="text-[#00ff41]/80 hover:text-[#00ff41] transition-opacity duration-200 text-[12px] tracking-[0.1em]">
-            [cart_{displayCount}]
-          </a>
-        ) : (
-          <button className="text-[#00ff41]/80 hover:text-[#00ff41] transition-opacity duration-200 text-[12px] tracking-[0.1em]">
-            [cart_{displayCount}]
-          </button>
-        )}
+        <Link
+          href="/cart"
+          className="text-[#00ff41]/80 hover:text-[#00ff41] transition-opacity duration-200 text-[12px] tracking-[0.1em]"
+        >
+          [cart_{displayCount}]
+        </Link>
       </div>
     </header>
   );

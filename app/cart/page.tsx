@@ -121,14 +121,14 @@ export default function CartPage() {
                 <Link
                   href={`/products/${line.merchandise.product.handle}`}
                   className="shrink-0 border border-[#00ff41]/20 hover:border-[#00ff41]/60 transition-colors overflow-hidden bg-[#0a0a0a]"
-                  style={{ width: 72, height: 72 }}
+                  style={{ width: 120, height: 120 }}
                 >
                   {line.merchandise.product.featuredImage ? (
                     <Image
                       src={line.merchandise.product.featuredImage.url}
                       alt={line.merchandise.product.featuredImage.altText ?? line.merchandise.product.title}
-                      width={72}
-                      height={72}
+                      width={120}
+                      height={120}
                       className="w-full h-full object-cover"
                     />
                   ) : (

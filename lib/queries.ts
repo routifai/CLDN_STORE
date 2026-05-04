@@ -50,6 +50,19 @@ const CART_FIELDS = `
                 url
                 altText
               }
+              variants(first: 10) {
+                edges {
+                  node {
+                    id
+                    title
+                    availableForSale
+                    price {
+                      amount
+                      currencyCode
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -170,6 +183,19 @@ export const UPDATE_CART = `
     cartLinesUpdate(
       cartId: $cartId
       lines: [{ id: $lineId, quantity: $quantity }]
+    ) {
+      cart {
+        ${CART_FIELDS}
+      }
+    }
+  }
+`;
+
+export const SWAP_CART_LINE = `
+  mutation swapCartLine($cartId: ID!, $lineId: ID!, $variantId: ID!, $quantity: Int!) {
+    cartLinesUpdate(
+      cartId: $cartId
+      lines: [{ id: $lineId, merchandiseId: $variantId, quantity: $quantity }]
     ) {
       cart {
         ${CART_FIELDS}

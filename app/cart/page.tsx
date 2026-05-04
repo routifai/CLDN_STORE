@@ -11,6 +11,7 @@ export default function CartPage() {
   const [cart, setLocalCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingLineId, setUpdatingLineId] = useState<string | null>(null);
+  const [editingLineId, setEditingLineId] = useState<string | null>(null);
 
   const fetchCart = useCallback(async () => {
     if (!cartId) { setLoading(false); return; }
@@ -28,6 +29,27 @@ export default function CartPage() {
   }, [cartId, setCart, clearCart]);
 
   useEffect(() => { fetchCart(); }, [fetchCart]);
+
+  const swapVariant = async (line: CartLine, newVariantId: string) => {
+    if (!cartId || newVariantId === line.merchandise.id) {
+      setEditingLineId(null);
+      return;
+    }
+    setUpdatingLineId(line.id);
+    setEditingLineId(null);
+    try {
+      const res = await fetch("/api/cart/swap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartId, lineId: line.id, variantId: newVariantId, quantity: line.quantity }),
+      });
+      const updated: Cart = await res.json();
+      setLocalCart(updated);
+      setCart(updated.id, updated.totalQuantity, updated.checkoutUrl);
+    } finally {
+      setUpdatingLineId(null);
+    }
+  };
 
   const updateQuantity = async (line: CartLine, delta: number) => {
     if (!cartId) return;
@@ -146,9 +168,40 @@ export default function CartPage() {
                     >
                       {line.merchandise.product.title}
                     </Link>
-                    <div className="text-[11px] text-[#00ff41]/50 tracking-widest uppercase">
-                      VARIANT: {line.merchandise.title}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <div className="text-[11px] text-[#00ff41]/50 tracking-widest uppercase">
+                        SIZE: {line.merchandise.title}
+                      </div>
+                      <button
+                        onClick={() => setEditingLineId(editingLineId === line.id ? null : line.id)}
+                        className="text-[9px] tracking-widest uppercase text-[#00ff41]/30 hover:text-[#00ff41]/70 transition-colors border border-[#00ff41]/20 hover:border-[#00ff41]/50 px-1.5 py-0.5"
+                      >
+                        [EDIT]
+                      </button>
                     </div>
+                    {editingLineId === line.id && (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {line.merchandise.product.variants.edges.map(({ node: v }) => {
+                          const isCurrent = v.id === line.merchandise.id;
+                          return (
+                            <button
+                              key={v.id}
+                              disabled={!v.availableForSale || isUpdating}
+                              onClick={() => swapVariant(line, v.id)}
+                              className={`px-2.5 py-1 text-[9px] tracking-widest uppercase border transition-all duration-150
+                                ${isCurrent
+                                  ? "border-[#00ff41] bg-[#00ff41] text-[#0a0a0a] font-bold cursor-default"
+                                  : !v.availableForSale
+                                  ? "border-[#00ff41]/10 text-[#00ff41]/15 cursor-not-allowed line-through"
+                                  : "border-[#00ff41]/40 text-[#00ff41]/60 hover:border-[#00ff41] hover:text-[#00ff41]"
+                                }`}
+                            >
+                              {v.title}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                   <div className="text-[13px] tracking-widest whitespace-nowrap">
                     {currency} {price.toFixed(2)}

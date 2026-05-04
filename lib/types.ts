@@ -42,6 +42,9 @@ export interface CartLineMerchandise {
       url: string;
       altText: string | null;
     } | null;
+    variants: {
+      edges: Array<{ node: ProductVariant }>;
+    };
   };
 }
 

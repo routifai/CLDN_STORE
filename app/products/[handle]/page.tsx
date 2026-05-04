@@ -1,7 +1,7 @@
 import { Product, GetProductByHandleData } from '@/lib/types';
-import AddToCart from '@/components/AddToCart';
 import Link from 'next/link';
 import TiltImage from '@/components/TiltImage';
+import VariantSelector from '@/components/VariantSelector';
 import { shopifyFetch } from '@/lib/shopify';
 import { GET_PRODUCT_BY_HANDLE } from '@/lib/queries';
 
@@ -30,7 +30,7 @@ export default async function ProductPage({ params }: { params: { handle: string
   }
 
   const image = product.images.edges[0]?.node;
-  const variant = product.variants.edges[0]?.node; // Simplify: use first variant for now
+  const variants = product.variants.edges.map((e) => e.node);
   
   return (
     <div className="flex flex-col gap-8 max-w-7xl mx-auto w-full px-4 md:px-8 py-8 md:py-12">
@@ -97,25 +97,7 @@ export default async function ProductPage({ params }: { params: { handle: string
             <div className="border-b border-[#00ff41]/30 pb-2 font-bold">
               --- EXECUTE_TRANSACTION ---
             </div>
-            {variant ? (
-              <>
-                <div className="flex justify-between items-center text-xl">
-                  <span>[PRICE]</span>
-                  <span>{variant.price.currencyCode} {variant.price.amount}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm opacity-80 mb-4">
-                  <span>[STATUS]</span>
-                  <span className={variant.availableForSale ? "text-[#00ff41]" : "text-red-500"}>
-                    {variant.availableForSale ? 'IN_STOCK' : 'OUT_OF_STOCK'}
-                  </span>
-                </div>
-                {variant.availableForSale && (
-                  <AddToCart variantId={variant.id} />
-                )}
-              </>
-            ) : (
-              <div className="text-red-500">ERROR: NO_VARIANTS_AVAILABLE</div>
-            )}
+            <VariantSelector variants={variants} />
           </div>
         </div>
       </div>

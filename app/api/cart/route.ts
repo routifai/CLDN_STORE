@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     console.log('[api/cart] POST createCart', { variantId, quantity });
     const cart = await createCart(variantId, quantity);
-    return NextResponse.json({ cartId: cart.id, checkoutUrl: cart.checkoutUrl, cart });
+    return NextResponse.json(cart);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('[api/cart] error:', message);

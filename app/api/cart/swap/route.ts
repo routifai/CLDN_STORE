@@ -5,11 +5,9 @@ import type { UpdateCartData } from "@/lib/types";
 
 export async function POST(req: Request) {
   const { cartId, lineId, variantId, quantity } = await req.json();
-  const data = await shopifyFetch<UpdateCartData>(SWAP_CART_LINE, {
-    cartId,
-    lineId,
-    variantId,
-    quantity,
+  const data = await shopifyFetch<UpdateCartData>({
+    query: SWAP_CART_LINE,
+    variables: { cartId, lineId, variantId, quantity },
   });
   return NextResponse.json(data.cartLinesUpdate.cart);
 }

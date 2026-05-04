@@ -37,6 +37,11 @@ export interface CartLineMerchandise {
   price: MoneyV2;
   product: {
     title: string;
+    handle: string;
+    featuredImage: {
+      url: string;
+      altText: string | null;
+    } | null;
   };
 }
 

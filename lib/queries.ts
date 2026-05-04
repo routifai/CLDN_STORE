@@ -45,6 +45,11 @@ const CART_FIELDS = `
             }
             product {
               title
+              handle
+              featuredImage {
+                url
+                altText
+              }
             }
           }
         }

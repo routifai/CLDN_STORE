@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
+import Image from "next/image";
 import type { Cart, CartLine } from "@/lib/types";
 
 export default function CartPage() {
@@ -115,17 +116,43 @@ export default function CartPage() {
               key={line.id}
               className="border border-[#00ff41]/20 p-4 flex flex-col gap-3"
             >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex flex-col gap-1">
-                  <div className="text-[13px] font-bold tracking-widest uppercase">
-                    {line.merchandise.product.title}
+              <div className="flex items-start gap-4">
+                {/* Product thumbnail */}
+                <Link
+                  href={`/products/${line.merchandise.product.handle}`}
+                  className="shrink-0 border border-[#00ff41]/20 hover:border-[#00ff41]/60 transition-colors overflow-hidden bg-[#0a0a0a]"
+                  style={{ width: 72, height: 72 }}
+                >
+                  {line.merchandise.product.featuredImage ? (
+                    <Image
+                      src={line.merchandise.product.featuredImage.url}
+                      alt={line.merchandise.product.featuredImage.altText ?? line.merchandise.product.title}
+                      width={72}
+                      height={72}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[#00ff41]/20 text-[9px] tracking-widest">
+                      [IMG]
+                    </div>
+                  )}
+                </Link>
+
+                <div className="flex flex-1 justify-between items-start gap-2">
+                  <div className="flex flex-col gap-1">
+                    <Link
+                      href={`/products/${line.merchandise.product.handle}`}
+                      className="text-[13px] font-bold tracking-widest uppercase hover:underline"
+                    >
+                      {line.merchandise.product.title}
+                    </Link>
+                    <div className="text-[11px] text-[#00ff41]/50 tracking-widest uppercase">
+                      VARIANT: {line.merchandise.title}
+                    </div>
                   </div>
-                  <div className="text-[11px] text-[#00ff41]/50 tracking-widest uppercase">
-                    VARIANT: {line.merchandise.title}
+                  <div className="text-[13px] tracking-widest whitespace-nowrap">
+                    {currency} {price.toFixed(2)}
                   </div>
-                </div>
-                <div className="text-[13px] tracking-widest whitespace-nowrap">
-                  {currency} {price.toFixed(2)}
                 </div>
               </div>
 

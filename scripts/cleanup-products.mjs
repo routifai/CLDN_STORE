@@ -44,7 +44,7 @@ console.log('');
 
 // 3. Identify the hoodie
 const hoodie = products.find(p =>
-  p.handle === 'hackerman-hoodie' || p.title.toLowerCase().includes('hackerman')
+  p.handle === 'hackerman-hoodie' || p.handle === 'hoodie-01' || p.title.toLowerCase().includes('hackerman') || p.title.toLowerCase().includes('hoodie')
 );
 if (!hoodie) {
   console.error('Could not find Hackerman Hoodie. Aborting.');
@@ -65,7 +65,7 @@ console.log('\nRenaming to HOODIE_01...');
 const renameRes = await fetch(`${BASE}/products/${hoodie.id}.json`, {
   method: 'PUT',
   headers,
-  body: JSON.stringify({ product: { id: hoodie.id, title: 'HOODIE_01' } }),
+  body: JSON.stringify({ product: { id: hoodie.id, title: 'HOODIE_01', handle: 'hoodie-01' } }),
 });
 const renamed = await renameRes.json();
 console.log(`Renamed to: ${renamed.product?.title} (handle: ${renamed.product?.handle})`);
